@@ -22,6 +22,13 @@ cp .env.example .env
 # OPENAI_API_KEY="sk-your-openai-key"
 # BIG_MODEL="gpt-4o"
 # SMALL_MODEL="gpt-4o-mini"
+
+# Optional high-throughput tuning (recommended for intranet endpoints)
+# OPENAI_MAX_CONNECTIONS="200"
+# OPENAI_MAX_KEEPALIVE_CONNECTIONS="100"
+# OPENAI_KEEPALIVE_EXPIRY="60"
+# OPENAI_ENABLE_HTTP2="true"
+# STREAM_DISCONNECT_CHECK_INTERVAL="20"
 ```
 
 #### Azure OpenAI

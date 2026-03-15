@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.api.endpoints import router as api_router
+from src.api.endpoints import router as api_router, openai_client
 import uvicorn
 import sys
 from src.core.config import config
@@ -7,6 +7,11 @@ from src.core.config import config
 app = FastAPI(title="Claude-to-OpenAI API Proxy", version="1.0.0")
 
 app.include_router(api_router)
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await openai_client.close()
+
 
 
 def main():
@@ -33,6 +38,11 @@ def main():
         print(f"  MAX_TOKENS_LIMIT - Token limit (default: 4096)")
         print(f"  MIN_TOKENS_LIMIT - Minimum token limit (default: 100)")
         print(f"  REQUEST_TIMEOUT - Request timeout in seconds (default: 90)")
+        print(f"  OPENAI_MAX_CONNECTIONS - Max outbound connections to model API (default: 200)")
+        print(f"  OPENAI_MAX_KEEPALIVE_CONNECTIONS - Reused keep-alive connections (default: 100)")
+        print(f"  OPENAI_KEEPALIVE_EXPIRY - Keep-alive expiry seconds (default: 60)")
+        print(f"  OPENAI_ENABLE_HTTP2 - Enable HTTP/2 for upstream calls (default: true)")
+        print(f"  STREAM_DISCONNECT_CHECK_INTERVAL - Check disconnect every N chunks (default: 20)")
         print("")
         print("Model mapping:")
         print(f"  Claude haiku models -> {config.small_model}")
@@ -48,6 +58,8 @@ def main():
     print(f"   Small Model (haiku): {config.small_model}")
     print(f"   Max Tokens Limit: {config.max_tokens_limit}")
     print(f"   Request Timeout: {config.request_timeout}s")
+    print(f"   Upstream Pool: max={config.openai_max_connections}, keepalive={config.openai_max_keepalive_connections}, expiry={config.openai_keepalive_expiry}s, http2={config.openai_enable_http2}")
+    print(f"   Stream Disconnect Check Interval: {config.stream_disconnect_check_interval} chunks")
     print(f"   Server: {config.host}:{config.port}")
     print(f"   Client API Key Validation: {'Enabled' if config.anthropic_api_key else 'Disabled'}")
     print("")
