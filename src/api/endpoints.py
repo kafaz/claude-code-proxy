@@ -26,6 +26,10 @@ openai_client = OpenAIClient(
     config.request_timeout,
     api_version=config.azure_api_version,
     custom_headers=custom_headers,
+    max_connections=config.openai_max_connections,
+    max_keepalive_connections=config.openai_max_keepalive_connections,
+    keepalive_expiry=config.openai_keepalive_expiry,
+    enable_http2=config.openai_enable_http2,
 )
 
 async def validate_api_key(x_api_key: Optional[str] = Header(None), authorization: Optional[str] = Header(None)):
@@ -81,6 +85,7 @@ async def create_message(request: ClaudeMessagesRequest, http_request: Request, 
                         http_request,
                         openai_client,
                         request_id,
+                        disconnect_check_interval=config.stream_disconnect_check_interval,
                     ),
                     media_type="text/event-stream",
                     headers={
@@ -88,6 +93,7 @@ async def create_message(request: ClaudeMessagesRequest, http_request: Request, 
                         "Connection": "keep-alive",
                         "Access-Control-Allow-Origin": "*",
                         "Access-Control-Allow-Headers": "*",
+                        "X-Accel-Buffering": "no",
                     },
                 )
             except HTTPException as e:

@@ -95,6 +95,14 @@ The application automatically loads environment variables from a `.env` file in 
 - `MAX_TOKENS_LIMIT` - Token limit (default: `4096`)
 - `REQUEST_TIMEOUT` - Request timeout in seconds (default: `90`)
 
+**Upstream Transport Tuning:**
+
+- `OPENAI_MAX_CONNECTIONS` - Max upstream connections for proxy-to-model traffic (default: `200`)
+- `OPENAI_MAX_KEEPALIVE_CONNECTIONS` - Keep-alive connection reuse pool size (default: `100`)
+- `OPENAI_KEEPALIVE_EXPIRY` - Keep-alive expiry in seconds (default: `60`)
+- `OPENAI_ENABLE_HTTP2` - Enable HTTP/2 to upstream provider when supported (default: `true`)
+- `STREAM_DISCONNECT_CHECK_INTERVAL` - Check client disconnect every N chunks in streaming mode (default: `20`)
+
 **Custom Headers:**
 
 - `CUSTOM_HEADER_*` - Custom headers for API requests (e.g., `CUSTOM_HEADER_ACCEPT`, `CUSTOM_HEADER_AUTHORIZATION`)
@@ -144,6 +152,13 @@ Environment variables with the `CUSTOM_HEADER_` prefix are automatically convert
 # Basic configuration
 OPENAI_API_KEY="sk-your-openai-api-key-here"
 OPENAI_BASE_URL="https://api.openai.com/v1"
+
+# Throughput tuning (recommended for intranet/self-hosted providers)
+OPENAI_MAX_CONNECTIONS="200"
+OPENAI_MAX_KEEPALIVE_CONNECTIONS="100"
+OPENAI_KEEPALIVE_EXPIRY="60"
+OPENAI_ENABLE_HTTP2="true"
+STREAM_DISCONNECT_CHECK_INTERVAL="20"
 
 # Enable custom headers (uncomment as needed)
 CUSTOM_HEADER_ACCEPT="application/jsonstream"
